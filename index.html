@@ -66,10 +66,9 @@
         // 静态配置, 将example.js与utest.js联系起来了, 配置之后, 可以通过UTEST.runDebugMethod启动调试方法了.
         // UTEST.runDebugMethod只是将example.js中的原始方法标记为调试方法, 而没有主动调用example.js中的方法.
         // UTEST没有干扰example.js中一切逻辑.
-        UTEST.parseConfig({
+        UTEST.parseMethod({
             renderBlue: $,
-            renderRed: $,
-            qie: $
+            renderRed: $
         });
 
         function red() {
@@ -82,15 +81,15 @@
 
         function qie(count) {
             if (!!count) {
-                UTEST.runDebugMethod('qie', function (num) { return num == count });
+                UTEST.updateDebugFunc('qie', function (num) { return num == count });
             } else {
-                UTEST.runDebugMethod("qie");
+                UTEST.updateDebugFunc("qie", true);
             }
         }
 
         document.getElementById('num').onchange = function () {
             var count = + document.getElementById('num').value || 3;
-            UTEST.runDebugMethod('qie', function (num) { return num == count });
+            UTEST.updateDebugFunc('qie', function (num) { return num == count });
         }
 
         qie(3);

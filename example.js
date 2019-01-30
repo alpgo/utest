@@ -1,11 +1,13 @@
 // 此处引用$为命名空间
 var $ = (function () {
+    // 蓝球
     var blueObj = {
         offsetX: 100,   // 圆心水平坐标
         radius: 50,     // 半径
         step: 1         // 运动方向(从左向右)
     };
 
+    // 红球
     var redObj = {
         offsetX: 300,
         radius: 50,
@@ -25,11 +27,6 @@ var $ = (function () {
     var obj = {
         count: 0,   // 相切次数
         render: function render() {
-            this.renderStage();
-            this.checkDistance();
-        },
-        renderStage: function () {
-            // 添加该方法, 是为了更好的展示 UTEST.printMsgLoc 可以打印出函数的调用路径
             this.renderBg();
             this.renderBlue();
             this.renderRed();
@@ -82,14 +79,16 @@ var $ = (function () {
                 redColor = Math.floor(Math.random() * 256);
                 greenColor = Math.floor(Math.random() * 256);
                 blueColor = Math.floor(Math.random() * 256);
-                this.qie(this.count);
+                qie(this.count);
             }
-        },
-        // 相切时被调用: (测试程序将会捕获count参数决定是否打印断点, 这个是测试工具的条件控制方法)
-        qie: function (count) {
-            console.log("第" + count + "次相切");
         }
     };
+
+    // 相切时被调用: (测试程序将会捕获count参数决定是否打印断点, 这个是测试工具的条件控制方法)
+    function qie(count) {
+        console.log("第" + count + "次相切");
+    }
+    eval(UTEST.eval(qie))
 
     // 打印当前背景颜色
     // 这里是为了演示UTEST工具同时支持set方法的配置(在typescript中set方法有着漂亮的写法, js中就是丑陋的defineProperty写法了)
@@ -109,6 +108,7 @@ var $ = (function () {
 
     function render() {
         obj.render();
+        obj.checkDistance();
         requestAnimationFrame(render);
     }
 
