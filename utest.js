@@ -33,11 +33,14 @@ var UTEST = UTEST || (function () {
         this.fn = fn;
         this.name = this.fn.name;
         this.str = Function.prototype.toString.call(this.fn);
-        this.cond = cond;
+        this.fix = funcModule.fixCache.hasOwnProperty(key) ? true : false;
+        this.cond = this.fix ? funcModule.fixCache[key] : cond;
     }
 
     Func.prototype.updateData = function (data) {
-        this.cond = data.cond;
+        if (!this.fix) {
+            this.cond = data.cond;
+        }
     };
 
     Func.prototype.generateStr = function () {
@@ -68,6 +71,12 @@ var UTEST = UTEST || (function () {
     // 普通函数管理模块
     var funcModule = {
         cache: {}, // Map<{String}><{Func}>
+        fixCache: {},
+        fix: function (options) {
+            for (var key in options) {
+                this.fixCache[key] = options[key];
+            }
+        },
         get: function (key) {
             return this.cache[key] || null;
         },
@@ -110,7 +119,30 @@ var UTEST = UTEST || (function () {
         this.method = method;
         this.cond = cond;
         this.desp = Object.getOwnPropertyDescriptor(obj, method);
-        this.originFunc = this.desp.value || this.desp.set;
+        var type = this.getMethodType();
+        if (this.desp.value) {
+            this.originFunc = this.desp.value;
+        } else {
+            if (type == "get" && this.desp.get) {
+                this.originFunc = this.desp.get;
+            } else if (type == "set" && this.desp.set) {
+                this.originFunc = this.desp.set;
+            } else {
+                console.warn('something wrong');
+            }
+        }
+    }
+
+    Method.prototype.getMethodType = function () {
+        var len = this.key.length;
+        var str = this.key.substring(len - 4, len);
+        if (str == "-get") {
+            return "get";
+        } else if (str == "-set") {
+            return "set";
+        } else {
+            return "";
+        }
     }
 
     Method.prototype.updateData = function (data) {
@@ -118,21 +150,31 @@ var UTEST = UTEST || (function () {
     };
 
     Method.prototype.updateMethod = function (newFunc) {
+        var type = this.getMethodType();
         if (this.desp.value) {
             this.desp.value = newFunc;
-        }
-        if (this.desp.set) {
-            this.desp.set = newFunc;
+        } else {
+            if (type == "get" && this.desp.get) {
+                this.desp.get = newFunc;
+            }
+            if (type == "set" && this.desp.set) {
+                this.desp.set = newFunc;
+            }
         }
         Object.defineProperty(this.obj, this.method, this.desp);
     };
 
     Method.prototype.recoverMethod = function () {
+        var type = this.getMethodType();
         if (this.desp.value) {
             this.desp.value = this.originFunc;
-        }
-        if (this.desp.set) {
-            this.desp.set = this.originFunc;
+        } else {
+            if (type == "get" && this.desp.get) {
+                this.desp.get = this.originFunc;
+            }
+            if (type == "set" && this.desp.set) {
+                this.desp.set = this.originFunc;
+            }
         }
         Object.defineProperty(this.obj, this.method, this.desp);
     };
@@ -262,9 +304,10 @@ var UTEST = UTEST || (function () {
             this._state = true;
         },
         // 普通函数
-        parseFunc: function (options) {
+        parseFunc: function (options, fix) {
             parser.type = "func";
             parser.parse(options);
+            fix && funcModule.fix(options);
         },
         // 动态配置普通函数的条件
         updateDebugFunc: function (key, data) {
