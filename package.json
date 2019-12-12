@@ -1,0 +1,26 @@
+{
+  "name": "utest",
+  "version": "1.0.0",
+  "main": "lib/utest.js",
+  "description": "easy debugger for function",
+  "author": "celebration",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alpgo/utest.js.git"
+  },
+  "scripts": {
+    "clean:build": "rimraf lib",
+    "pretest": "npm run build",
+    "test": "mocha",
+    "prebuild": "npm run clean:build",
+    "build": "rollup -c"
+  },
+  "devDependencies": {
+    "mocha": "^6.2.2",
+    "rimraf": "^3.0.0",
+    "rollup": "^1.27.10",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-sourcemaps": "^0.4.2"
+  }
+}
