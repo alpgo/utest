@@ -1,15 +1,46 @@
-import sourcemaps from 'rollup-plugin-sourcemaps';
+import transpile from 'rollup-plugin-buble';
 import resolve from 'rollup-plugin-node-resolve';
+import { string } from 'rollup-plugin-string';
+import sourcemaps from 'rollup-plugin-sourcemaps';
+import commonjs from 'rollup-plugin-commonjs';
 
-var sourcemap = true;
-var plugins = [];
+const sourcemap = true;
 
-export default {
+const plugins = [
+    sourcemaps(),
+    resolve({
+        browser: true,
+        preferBuiltins: false,
+    }),
+    commonjs({
+        namedExports: {
+            'resource-loader': ['Resource'],
+        },
+    }),
+    string({
+        include: [
+            '**/*.frag',
+            '**/*.vert',
+        ],
+    }),
+    transpile(),
+];
+
+export default [{
     input: 'src/index.js',
     output: {
         file: 'lib/utest.js',
         format: 'cjs',
-        sourcemap   
+        sourcemap
     },
     plugins
-};
+}, {
+    input: 'src/index.js',
+    output: {
+        file: 'dist/utest.js',
+        name: 'UTEST',
+        format: 'iife',
+        sourcemap
+    },
+    plugins
+}];
