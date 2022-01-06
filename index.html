@@ -16,6 +16,7 @@
 <body>
     <canvas width="400" height="200"></canvas>
     <h3>测试以下按钮时,请按F12打开控制台,才可启动浏览器测试工具.</h3>
+    <h3>试着点击按钮“渲染红球时暂停”， 当程序暂停时, F11连续按两次, 就进入了具体的调试函数了</h3>
     <input type="button" value="渲染红球时暂停" style="color: red;" onclick="red()" />
     <input type="button" value="渲染蓝球时暂停" style="color: blue;" onclick="blue()" />
     <input type="button" value="红球与蓝球相切时暂停" style="color: green;" onclick="qie()">
@@ -28,13 +29,12 @@
         <input id="checkbox" type="checkbox" style="display: inline;">
         <input type="button" value="打印颜色" style="color:slateblue; display: inline;" onclick="printColor()">
     </p>
-    <h3>当程序暂停时, F11连续按两次, 就进入了具体的调试函数了</h3>
     <h3 style="color:saddlebrown">首先应该注意到: 所有断点调试控制都通过代码表达了, 没有任何的手动操作</h3>
     <p>utest.js是测试工具库. <span style="font-weight: bold; font-size: 20px;"> 严格地说, 应该是调试工具</span></p>
     <p>example.js是另一个库或者另一个项目, 属于被测试对象</p>
     <p>这里我们使用utest.js测试example.js项目,看看如何将测试更加简单自动化</p>
     <p>利用utest.js, 我们会更加快速的阅读代码, 当然对于编写代码没有任何帮助.</p>
-    <h3 style="margin: 0">最佳实践: 递归函数 (小示例: recursion.js)</h3>
+    <h3 style="margin: 0">最佳实践: 递归函数 (小示例: recursion.html)</h3>
     <p style="margin-top: 10px;">
         对于递归函数, 需要添加条件判断, 才可精确的测试到递归函数中的某一次调用.</br>
         比如egret引擎中的渲染函数egret.CanvasRenderer.prototype.drawDisplayObject, 这是一个递归函数.</br>
